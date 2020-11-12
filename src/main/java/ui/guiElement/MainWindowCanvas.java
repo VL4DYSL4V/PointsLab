@@ -1,7 +1,8 @@
 package ui.guiElement;
 
+import entity.ApplicationContext;
 import entity.ColorPoint;
-import entity.Pair;
+import util.Pair;
 import entity.Point;
 import entity.Point2D;
 import enums.UIColor;
@@ -9,19 +10,22 @@ import enums.UIDimensionParameter;
 
 import java.awt.*;
 import java.util.Collection;
-import java.util.LinkedList;
 
 public class MainWindowCanvas extends Canvas {
 
-    private Collection<ColorPoint> colorPoints = new LinkedList<>();
-    private Collection<Pair<Point2D>> lineDefinitionPoints = new LinkedList<>();
     private final MainCanvasUtils mainCanvasUtils = new MainCanvasUtils();
+    private final ApplicationContext applicationContext;
 
-    public MainWindowCanvas(){
+    private MainWindowCanvas(ApplicationContext applicationContext){
+        this.applicationContext = applicationContext;
         setBackground(UIColor.BACKGROUND.getColor());
         setForeground(UIColor.FOREGROUND.getColor());
         setSize(UIDimensionParameter.WIDTH.getValue(),
                 Math.min(UIDimensionParameter.WIDTH.getValue(), UIDimensionParameter.HEIGHT.getValue()));
+    }
+
+    public static MainWindowCanvas getInstance(ApplicationContext applicationContext){
+        return new MainWindowCanvas(applicationContext);
     }
 
     private class MainCanvasUtils {
@@ -43,26 +47,14 @@ public class MainWindowCanvas extends Canvas {
         }
     }
 
-    public void setLineDefinitionPoints(Collection<Pair<Point2D>> lineDefinitionPoints) {
-        this.lineDefinitionPoints = lineDefinitionPoints;
-    }
-
-    public void setColorPoints(Collection<ColorPoint> colorPoints) {
-        this.colorPoints = colorPoints;
-    }
-
-    public Collection<ColorPoint> getColorPoints() {
-        return colorPoints;
-    }
-
     @Override
     public void paint(Graphics g) {
-        drawDots(g);
+        drawDots(g, applicationContext.getPoints());
 //        drawAllLines(g);
-        drawLines(g);
+        drawLines(g, applicationContext.getLines());
     }
 
-    private void drawDots(Graphics g) {
+    private void drawDots(Graphics g, Collection<ColorPoint> colorPoints) {
         Color colorBefore = g.getColor();
         for (ColorPoint colorPoint : colorPoints) {
             g.setColor(colorPoint.getColor());
@@ -72,18 +64,18 @@ public class MainWindowCanvas extends Canvas {
         g.setColor(colorBefore);
     }
 
-    private void drawLines(Graphics g){
+    private void drawLines(Graphics g, Collection<? extends Pair<? extends Point2D>> lineDefinitionPoints){
         int shift = mainCanvasUtils.getDotWidth() / 2;
-        for(Pair<Point2D> point2DPair: lineDefinitionPoints){
+        for(Pair<? extends Point2D> point2DPair: lineDefinitionPoints){
             int x1 = mainCanvasUtils.scaledPointOf(point2DPair.getFirst()).getX() + shift;
             int y1 = mainCanvasUtils.scaledPointOf(point2DPair.getFirst()).getY() + shift;
             int x2 = mainCanvasUtils.scaledPointOf(point2DPair.getSecond()).getX() + shift;
             int y2 = mainCanvasUtils.scaledPointOf(point2DPair.getSecond()).getY() + shift;
-            drawLine(g, new Point(x1, y1), new Point(x2, y2), UIColor.CROSSING_LINE_THEME.getColor());
+            drawLine(g, new Point(x1, y1), new Point(x2, y2), UIColor.GREEN_THEME_LINE.getColor());
         }
     }
 
-    private void drawAllLines(Graphics g) {
+    private void drawAllLines(Graphics g, Collection<ColorPoint> colorPoints) {
         int shift = mainCanvasUtils.getDotWidth() / 2;
         for (ColorPoint colorPoint : colorPoints) {
             for (ColorPoint colorPoint2 : colorPoints) {

@@ -2,7 +2,7 @@ package enums;
 
 public enum UIDimensionParameter {
 
-    WIDTH(500), HEIGHT(600);
+    WIDTH(500), HEIGHT(640);
 
     private final int value;
 

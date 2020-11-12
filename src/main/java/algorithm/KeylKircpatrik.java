@@ -1,6 +1,6 @@
 package algorithm;
 
-import entity.Pair;
+import util.Pair;
 import entity.Point;
 import entity.Point2D;
 import enums.CoordinateConstraints;
@@ -11,7 +11,7 @@ import java.util.*;
 public class KeylKircpatrik implements PointConnector {
 
     @Override
-    public Collection<Pair<Point2D>> getLinesPoints(Collection<Point2D> points) {
+    public Collection<Pair<Point2D>> getLinesPoints(Collection<? extends Point2D> points) {
         ArrayList<Point2D> input = new ArrayList<>(points);
         input.sort(Comparator.comparingInt(Point2D::getY).thenComparingInt(Point2D::getX));
         Pair<ArrayList<Point2D>> halves = getLeftAndRight(input);

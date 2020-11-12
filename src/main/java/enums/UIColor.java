@@ -9,8 +9,7 @@ public enum UIColor {
     GREEN_THEME(new Color(0, 187, 0)),
     RED_THEME(new Color(187, 0, 0)),
     BRIGHT_THEME(new Color(255, 255, 255)),
-    CROSSING_LINE_THEME(new Color(255, 165, 0));
-
+    GREEN_THEME_LINE(new Color(255, 195, 30));
     private final Color color;
 
     UIColor(Color color) {

@@ -42,9 +42,9 @@ public final class ColorPoint implements Point2D{
     @Override
     public String toString() {
         return
-//                "ColorPoint{" +
+                "ColorPoint{" +
                 "point=" + point +
-//                ", color=" + color +
+                ", color=" + color +
                 '}';
     }
 

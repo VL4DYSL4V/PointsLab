@@ -1,6 +1,6 @@
 package algorithm;
 
-import entity.Pair;
+import util.Pair;
 import entity.Point2D;
 import util.GeometryUtil;
 
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class EndruJarvis implements PointConnector {
     @Override
-    public Collection<Pair<Point2D>> getLinesPoints(Collection<Point2D> points) {
+    public Collection<Pair<Point2D>> getLinesPoints(Collection<? extends Point2D> points) {
         List<Point2D> input = new ArrayList<>(points);
         input.sort(Comparator.comparingInt(Point2D::getX).thenComparingInt(Point2D::getY));
         Point2D left = input.get(0);
