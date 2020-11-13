@@ -1,12 +1,10 @@
 package ui.guiElement;
 
 import entity.ApplicationContext;
-import entity.ColorPoint;
-import util.Pair;
 import entity.Point;
-import entity.Point2D;
 import enums.UIColor;
 import enums.UIDimensionParameter;
+import util.Pair;
 
 import java.awt.*;
 import java.util.Collection;
@@ -38,7 +36,7 @@ public class MainWindowCanvas extends Canvas {
             return MainWindowCanvas.this.getWidth() / 40;
         }
 
-        public Point scaledPointOf(Point2D point) {
+        public Point scaledPointOf(Point point) {
             int x = point.getX();
             int y = point.getY();
             x = (int) (x + 0.5) * getCoordinateStretchingCoefficient();
@@ -54,19 +52,19 @@ public class MainWindowCanvas extends Canvas {
         drawLines(g, applicationContext.getLines());
     }
 
-    private void drawDots(Graphics g, Collection<ColorPoint> colorPoints) {
+    private void drawDots(Graphics g, Collection<Point> colorPoints) {
         Color colorBefore = g.getColor();
-        for (ColorPoint colorPoint : colorPoints) {
-            g.setColor(colorPoint.getColor());
-            Point point = mainCanvasUtils.scaledPointOf(colorPoint.getPoint());
+        g.setColor(applicationContext.getPointTheme());
+        for (Point p : colorPoints) {
+            Point point = mainCanvasUtils.scaledPointOf(p);
             g.fillOval(point.getX(), point.getY(), mainCanvasUtils.getDotWidth(), mainCanvasUtils.getDotWidth());
         }
         g.setColor(colorBefore);
     }
 
-    private void drawLines(Graphics g, Collection<? extends Pair<? extends Point2D>> lineDefinitionPoints){
+    private void drawLines(Graphics g, Collection<? extends Pair<Point>> lineDefinitionPoints){
         int shift = mainCanvasUtils.getDotWidth() / 2;
-        for(Pair<? extends Point2D> point2DPair: lineDefinitionPoints){
+        for(Pair<Point> point2DPair: lineDefinitionPoints){
             int x1 = mainCanvasUtils.scaledPointOf(point2DPair.getFirst()).getX() + shift;
             int y1 = mainCanvasUtils.scaledPointOf(point2DPair.getFirst()).getY() + shift;
             int x2 = mainCanvasUtils.scaledPointOf(point2DPair.getSecond()).getX() + shift;
@@ -75,14 +73,14 @@ public class MainWindowCanvas extends Canvas {
         }
     }
 
-    private void drawAllLines(Graphics g, Collection<ColorPoint> colorPoints) {
+    private void drawAllLines(Graphics g, Collection<Point> colorPoints) {
         int shift = mainCanvasUtils.getDotWidth() / 2;
-        for (ColorPoint colorPoint : colorPoints) {
-            for (ColorPoint colorPoint2 : colorPoints) {
-                int x1 = mainCanvasUtils.scaledPointOf(colorPoint.getPoint()).getX() + shift;
-                int y1 = mainCanvasUtils.scaledPointOf(colorPoint.getPoint()).getY() + shift;
-                int x2 = mainCanvasUtils.scaledPointOf(colorPoint2.getPoint()).getX() + shift;
-                int y2 = mainCanvasUtils.scaledPointOf(colorPoint2.getPoint()).getY() + shift;
+        for (Point p : colorPoints) {
+            for (Point p2 : colorPoints) {
+                int x1 = mainCanvasUtils.scaledPointOf(p).getX() + shift;
+                int y1 = mainCanvasUtils.scaledPointOf(p).getY() + shift;
+                int x2 = mainCanvasUtils.scaledPointOf(p2).getX() + shift;
+                int y2 = mainCanvasUtils.scaledPointOf(p2).getY() + shift;
                 drawLine(g, new Point(x1, y1), new Point(x2, y2), UIColor.BRIGHT_THEME.getColor());
             }
         }

@@ -16,8 +16,8 @@ public class ApplicationContext {
     private final PointDAO  pointDAO;
     private PointConnector pointConnector = new EndruJarvis();
     private Color pointTheme = UIColor.GREEN_THEME.getColor();
-    private Collection<ColorPoint> points = new LinkedList<>();
-    private Collection<Pair<Point2D>> lines = new LinkedList<>();
+    private Collection<Point> points = new LinkedList<>();
+    private Collection<Pair<Point>> lines = new LinkedList<>();
 
     public ApplicationContext(PointDAO pointDAO) {
         this.pointDAO = pointDAO;
@@ -43,19 +43,19 @@ public class ApplicationContext {
         this.pointTheme = pointTheme;
     }
 
-    public Collection<ColorPoint> getPoints() {
+    public Collection<Point> getPoints() {
         return points;
     }
 
-    public void setPoints(Collection<ColorPoint> points) {
+    public void setPoints(Collection<Point> points) {
         this.points = points;
     }
 
-    public Collection<Pair<Point2D>> getLines() {
+    public Collection<Pair<Point>> getLines() {
         return lines;
     }
 
-    public void setLines(Collection<Pair<Point2D>> lines) {
+    public void setLines(Collection<Pair<Point>> lines) {
         this.lines = lines;
     }
 

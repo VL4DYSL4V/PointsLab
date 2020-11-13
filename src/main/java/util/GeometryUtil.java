@@ -1,14 +1,28 @@
 package util;
 
 import entity.Point;
-import entity.Point2D;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public final class GeometryUtil {
 
-    public static final Point2D I = new Point(1, 0);
-    public static final Point2D J = new Point(0, 1);
+    public static final Point I = new Point(1, 0);
+    public static final Point J = new Point(0, 1);
 
-    public static int compareToLine(Point2D linePoint1, Point2D linePoint2, Point2D anyPoint) {
+    private GeometryUtil(){}
+
+    public static double getTriangleSquare(Point a, Point b, Point c){
+        int a11 = a.getX() - c.getX();
+        int a12 = a.getY() - c.getY();
+        int a21 = b.getX() - c.getX();
+        int a22 = b.getY() - c.getY();
+        int det = a11 * a22 - a12 * a21;
+        return Math.abs(((double) det )/ 2);
+    }
+
+    public static int compareToLine(Point linePoint1, Point linePoint2, Point anyPoint) {
         int coeffA = linePoint2.getY() - linePoint1.getY();
         int coeffB = linePoint1.getX() - linePoint2.getX();
         int coeffC = linePoint2.getX() * linePoint1.getY() -
@@ -33,18 +47,30 @@ public final class GeometryUtil {
 //        return (coeffA * anyPoint.getX() + coeffB * anyPoint.getY() + coeffC) / mu;
 //    }
 
-    public static double getAngle(Point2D vector1, Point2D vector2) {
+
+
+    public static List<Point> getUpperAndEqualSubset(Point leftLineDefinitionPoint, Point RightDefinitionPoint, Collection<Point> points){
+        return points.stream().filter(p ->
+                compareToLine(leftLineDefinitionPoint, RightDefinitionPoint, p) >= 0).collect(Collectors.toList());
+    }
+
+    public static List<Point> getLowerAndEqualSubset(Point leftLineDefinitionPoint, Point RightDefinitionPoint, Collection<Point> points){
+        return points.stream().filter(p ->
+                compareToLine(leftLineDefinitionPoint, RightDefinitionPoint, p) <= 0).collect(Collectors.toList());
+    }
+
+    public static double getAngle(Point vector1, Point vector2) {
         double divisor = getVectorLength(vector1) * getVectorLength(vector2);
         double res = Math.acos(
                 dotProduct(vector1, vector2) / divisor);
         return Math.toDegrees(res);
     }
 
-    private static int dotProduct(Point2D vector1, Point2D vector2) {
+    private static int dotProduct(Point vector1, Point vector2) {
         return vector1.getX() * vector2.getX() + vector1.getY() * vector2.getY();
     }
 
-    private static double getVectorLength(Point2D vector) {
+    private static double getVectorLength(Point vector) {
         return Math.sqrt(Math.pow(vector.getX(), 2) + Math.pow(vector.getY(), 2));
     }
 }

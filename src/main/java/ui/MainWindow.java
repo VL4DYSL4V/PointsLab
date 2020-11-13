@@ -2,13 +2,13 @@ package ui;
 
 import UIUtils.UIUtils;
 import entity.ApplicationContext;
-import entity.ColorPoint;
+import entity.Point;
+import enums.AlgorithmChoice;
 import util.Pair;
-import entity.Point2D;
 import enums.UIColor;
 import enums.UIDimensionParameter;
 import ui.guiElement.*;
-import util.StringToAlgorithmConverter;
+import converter.StringToAlgorithmConverter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +29,9 @@ public class MainWindow extends JFrame {
     private final JButton executeButton = new AppButton("Execute");
 
     private final JComboBox<String> algorithmChooser = new MainJComboBox(new String[]{
-            "Forchun", "Delone", "Kirkpatrik", "Jarvis", "Graham", "Recursive"
+            AlgorithmChoice.FORCHUN.getValue(), AlgorithmChoice.DELONE.getValue(),
+            AlgorithmChoice.KIRKPATRIK.getValue(), AlgorithmChoice.JARVIS.getValue(),
+            AlgorithmChoice.GRAHAM.getValue(), AlgorithmChoice.RECURSIVE.getValue()
     });
 
     private final ApplicationContext applicationContext;
@@ -50,19 +52,18 @@ public class MainWindow extends JFrame {
                 e -> {
                     JComboBox<String> box = (JComboBox<String>) e.getSource();
                     applicationContext.setPointConnector(
-                            StringToAlgorithmConverter.convert((String) box.getSelectedItem())
-                    );
+                            StringToAlgorithmConverter.convert((String) box.getSelectedItem()));
                 };
         algorithmChooser.addActionListener(algorithmChooserListener);
     }
 
-    private void configureExecuteButton(){
+    private void configureExecuteButton() {
         ActionListener executeButtonListener =
-                e ->{
-                    Collection<ColorPoint> points = applicationContext.getPoints();
+                e -> {
+                    Collection<Point> points = applicationContext.getPoints();
                     if (!(points == null || points.isEmpty())) {
-                        Collection<Pair<Point2D>> lines =
-                                    applicationContext.getPointConnector().getLinesPoints(points);
+                        Collection<Pair<Point>> lines =
+                                applicationContext.getPointConnector().getLinesPoints(points);
                         applicationContext.setLines(lines);
                         canvas.repaint();
                     }
@@ -73,13 +74,10 @@ public class MainWindow extends JFrame {
     private void configureChangeThemeButton() {
         ActionListener changeThemeButtonListener =
                 e -> {
-                    Collection<ColorPoint> points = applicationContext.getPoints();
+                    Collection<Point> points = applicationContext.getPoints();
                     if (!(points == null || points.isEmpty())) {
-                        Collection<ColorPoint> pointsSubstitute = new LinkedList<>();
                         changeTheme();
-                        points.forEach(point -> pointsSubstitute.add(new ColorPoint(point.getPoint(),
-                                applicationContext.getPointTheme())));
-                        drawPoints(pointsSubstitute);
+                        drawPoints(points);
                     }
                 };
         changeThemeButton.addActionListener(changeThemeButtonListener);
@@ -88,8 +86,8 @@ public class MainWindow extends JFrame {
     private void configureGeneratePointSetButton() {
         ActionListener generatePointSetButtonListener =
                 e -> {
-                    Collection<ColorPoint> points = applicationContext.getPointDAO()
-                                                .getColorPoints(8, applicationContext.getPointTheme());
+                    Collection<Point> points = applicationContext.getPointDAO()
+                            .getPoints(8);
                     drawPoints(points);
                 };
         generatePointSetButton.addActionListener(generatePointSetButtonListener);
@@ -114,7 +112,7 @@ public class MainWindow extends JFrame {
         setTitle("Lab-3 OOP");
     }
 
-    private void drawPoints(Collection<ColorPoint> points) {
+    private void drawPoints(Collection<Point> points) {
         applicationContext.setPoints(points);
         applicationContext.setLines(new LinkedList<>());
         canvas.repaint();

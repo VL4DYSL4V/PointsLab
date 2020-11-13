@@ -2,7 +2,7 @@ package entity;
 
 import java.util.Objects;
 
-public final class Point implements Point2D{
+public final class Point{
 
     private final int x;
     private final int y;
@@ -16,12 +16,10 @@ public final class Point implements Point2D{
         this.y = y;
     }
 
-    @Override
     public int getX() {
         return x;
     }
 
-    @Override
     public int getY() {
         return y;
     }

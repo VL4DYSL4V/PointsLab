@@ -1,54 +1,42 @@
 package algorithm;
 
+import entity.Point;
 import util.Pair;
-import entity.Point2D;
 import util.GeometryUtil;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public class EndruJarvis implements PointConnector {
+
     @Override
-    public Collection<Pair<Point2D>> getLinesPoints(Collection<? extends Point2D> points) {
-        List<Point2D> input = new ArrayList<>(points);
-        input.sort(Comparator.comparingInt(Point2D::getX).thenComparingInt(Point2D::getY));
-        Point2D left = input.get(0);
-        Point2D right = input.get(input.size() - 1);
-        List<Point2D> upper = input.stream().filter(p ->
-                GeometryUtil.compareToLine(left, right, p) >= 0).collect(Collectors.toList());
-        List<Point2D> lower = input.stream().filter(p ->
-                GeometryUtil.compareToLine(left, right, p) < 0).collect(Collectors.toList());
-        List<Pair<Point2D>> first = getPairs(upper, input);
-        List<Pair<Point2D>> second = getPairs(lower, input);
-        Collection<Pair<Point2D>> out = new ArrayList<>();
-        if (first.size() > 1 && second.size() > 1) {
-            Point2D lastFirst = first.get(first.size() - 1).getSecond();
-            Point2D lastSecond = second.get(second.size() - 1).getSecond();
-            out.add(new Pair<>(lastFirst, lastSecond));
-        } else if (second.size() == 1) {
-            out.add(new Pair<>(first.get(0).getFirst(), second.get(0).getFirst()));
-            out.add(new Pair<>(first.get(first.size() - 1).getSecond(), second.get(0).getSecond()));
-        } else if (second.isEmpty()) {
-            out.add(new Pair<>(first.get(0).getFirst(), first.get(0).getFirst()));
-            out.add(new Pair<>(first.get(first.size() - 1).getSecond(), first.get(0).getSecond()));
-        }
+    public Collection<Pair<Point>> getLinesPoints(Collection<Point> points) {
+        List<Point> input = new ArrayList<>(points);
+        input.sort(Comparator.comparingInt(Point::getX).thenComparingInt(Point::getY));
+        Point left = input.get(0);
+        Point right = input.get(input.size() - 1);
+        List<Point> upper = GeometryUtil.getUpperAndEqualSubset(left, right, input);
+        List<Point> lower = GeometryUtil.getLowerAndEqualSubset(left, right, input);
+        List<Pair<Point>> first = getPairs(upper, input);
+        List<Pair<Point>> second = getPairs(lower, input);
+        Collection<Pair<Point>> out = new ArrayList<>();
         out.addAll(first);
         out.addAll(second);
         return out;
     }
 
-    private List<Pair<Point2D>> getPairs(List<Point2D> half, List<Point2D> input) {
-        List<Pair<Point2D>> out = new ArrayList<>();
+    private List<Pair<Point>> getPairs(List<Point> half, List<Point> input) {
+        List<Pair<Point>> out = new ArrayList<>();
         if (half.size() == 0) {
             return out;
         }
         if (half.size() == 1) {
             out.add(new Pair<>(half.get(0), half.get(0)));
         } else {
-            Point2D last = input.get(0);
-            for (Point2D curr : half) {
+            Point last = input.get(0);
+            for (Point curr : half) {
                 Set<Integer> compResults = new HashSet<>();
-                for (Point2D other : input) {
+                for (Point other : input) {
                     if (other.equals(curr) || other.equals(last)) {
                         continue;
                     }
@@ -65,5 +53,10 @@ public class EndruJarvis implements PointConnector {
             }
         }
         return out;
+    }
+
+    @Override
+    public String toString() {
+        return "EndruJarvis{}";
     }
 }

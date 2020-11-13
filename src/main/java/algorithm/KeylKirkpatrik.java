@@ -2,22 +2,22 @@ package algorithm;
 
 import util.Pair;
 import entity.Point;
-import entity.Point2D;
 import enums.CoordinateConstraints;
 import util.GeometryUtil;
 
 import java.util.*;
 
-public class KeylKircpatrik implements PointConnector {
+public class KeylKirkpatrik implements PointConnector {
 
     @Override
-    public Collection<Pair<Point2D>> getLinesPoints(Collection<? extends Point2D> points) {
-        ArrayList<Point2D> input = new ArrayList<>(points);
-        input.sort(Comparator.comparingInt(Point2D::getY).thenComparingInt(Point2D::getX));
-        Pair<ArrayList<Point2D>> halves = getLeftAndRight(input);
-        ArrayList<Point2D> left = halves.getFirst();
-        ArrayList<Point2D> right = halves.getSecond();
-//        System.out.println(halves);
+    public Collection<Pair<Point>> getLinesPoints(Collection<Point> points) {
+        ArrayList<Point> input = new ArrayList<>(points);
+        input.sort(Comparator.comparingInt(Point::getY).thenComparingInt(Point::getX));
+        Pair<ArrayList<Point>> halves = getLeftAndRight(input);
+        ArrayList<Point> left = halves.getFirst();
+        ArrayList<Point> right = halves.getSecond();
+        System.out.println("left = " + left);
+        System.out.println("right = " + right);
         return connectPoints(left, right);
     }
 
@@ -39,23 +39,16 @@ public class KeylKircpatrik implements PointConnector {
 //
 //        return out;
 //    }
-    private ArrayList<Pair<Point2D>> connectPoints(ArrayList<Point2D> left, ArrayList<Point2D> right) {
-        ArrayList<Pair<Point2D>> out = new ArrayList<>();
-        Point2D lastLeft = left.get(0);
-        Point2D lastVector = GeometryUtil.I;
-        Map<Double, Point2D> leftAngles = new HashMap<>();
-
-        for (int j = 1; j < left.size(); j++) {
-            Point2D curr = left.get(j);
-            Point2D vector = new Point(lastLeft.getX() - curr.getX(), lastLeft.getY() - curr.getY());
+    private ArrayList<Pair<Point>> connectPoints(ArrayList<Point> left, ArrayList<Point> right) {
+        ArrayList<Pair<Point>> out = new ArrayList<>();
+        Point lastLeft = left.get(0);
+        Point lastVector = GeometryUtil.I;
+        Map<Double, Point> leftAngles = new HashMap<>();
+        for(int i = 1; i < left.size(); i++){
+            Point curr = left.get(i);
+            Point vector = new Point(lastLeft.getX() - curr.getX(), lastLeft.getY() - curr.getY());
             double angle = GeometryUtil.getAngle(vector, GeometryUtil.I);
-            System.out.println("angle for " + lastLeft + ", " + curr + " = " + angle);
-            leftAngles.put(angle, curr);
         }
-//            System.out.println(leftAngles);
-        Point2D curr = leftAngles.get(leftAngles.keySet().stream().min(Comparator.naturalOrder()).get());
-        out.add(new Pair<>(lastLeft, curr));
-        lastLeft = curr;
 
 
 //        for (int i = 1; i < left.size(); i++) {
@@ -83,30 +76,10 @@ public class KeylKircpatrik implements PointConnector {
         return out;
     }
 
-    //    private Pair<ArrayList<Point2D>> getLeftAndRight(ArrayList<Point2D> sortedInput) {
-//        ArrayList<Point2D> left = new ArrayList<>();
-//        ArrayList<Point2D> right = new ArrayList<>();
-//        Point2D last = sortedInput.get(0);
-//        left.add(last);
-//        for (int i = 1; i < sortedInput.size(); i++) {
-//            Point2D curr = sortedInput.get(i);
-//            if (curr.getY() != last.getY()) {
-//                left.add(curr);
-//                if (!left.contains(last)) {
-//                    right.add(last);
-//                }
-//            }
-//            last = curr;
-//        }
-//        if (!left.get(left.size() - 1).equals(last)) {
-//            right.add(last);
-//        }
-//        return new Pair<>(left, right);
-//    }
-    private Pair<ArrayList<Point2D>> getLeftAndRight(ArrayList<Point2D> sortedInput) {
-        ArrayList<Point2D> left = new ArrayList<>();
-        ArrayList<Point2D> right = new ArrayList<>();
-        for (Point2D point2D : sortedInput) {
+    private Pair<ArrayList<Point>> getLeftAndRight(ArrayList<Point> sortedInput) {
+        ArrayList<Point> left = new ArrayList<>();
+        ArrayList<Point> right = new ArrayList<>();
+        for (Point point2D : sortedInput) {
             if (point2D.getX() <= CoordinateConstraints.MIDDLE_X.getValue()) {
                 if (left.isEmpty() || left.get(left.size() - 1).getY() < point2D.getY()) {
                     left.add(point2D);
@@ -122,5 +95,10 @@ public class KeylKircpatrik implements PointConnector {
             }
         }
         return new Pair<>(left, right);
+    }
+
+    @Override
+    public String toString() {
+        return "KeylKirkpatrik{}";
     }
 }
